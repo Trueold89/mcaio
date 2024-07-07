@@ -21,6 +21,10 @@ async def get_name(server: AIOMCServer) -> str:
     return await server.name
 
 
+async def get_motd(server: AIOMCServer) -> str:
+    return await server.motd
+
+
 async def get_count(server: AIOMCServer) -> int:
     return await server.players_count
 
@@ -40,6 +44,8 @@ async def action() -> None:
                 out = get_max(server)
             case 'pcount':
                 out = get_count(server)
+            case 'motd':
+                out = get_motd(server)
             case _:
                 raise RuntimeError
         print(await out)
