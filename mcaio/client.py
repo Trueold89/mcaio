@@ -37,37 +37,71 @@ class AIOConnection(object):
 class IMCServer(ABC):
 
     def __init__(self, host: str, port: int) -> None:
+        """
+        :param host: Minecraft server ip or hostname
+        :param port: Minecraft server port
+        """
         self.host = host
         self.port = port
 
     @property
     @abstractmethod
     async def players_count(self) -> int:
+        """
+        Returns current number of players on server
+
+        :return: Number of players on server
+        """
         raise NotImplementedError
 
     @property
     @abstractmethod
     async def name(self) -> str:
+        """
+        Returns server core name
+
+        :return: Server name
+        """
         raise NotImplementedError
 
     @property
     @abstractmethod
     async def maxplayers(self) -> int:
+        """
+        Returns max number of players available on server
+
+        :return: Max number of players
+        """
         raise NotImplementedError
 
     @property
     @abstractmethod
     async def motd(self) -> str:
+        """
+        Returns Message of the day
+
+        :return: Server motd
+        """
         raise NotImplementedError
 
     @property
     @abstractmethod
     async def players_list(self) -> Iterable:
+        """
+        Returns iterable object with online players nicknames
+
+        :return: Players nicknames iterable object
+        """
         raise NotImplementedError
 
     @property
     @abstractmethod
     async def all_info(self) -> dict:
+        """
+        Returns dict with all information about server
+
+        :return: All information about server
+        """
         raise NotImplementedError
 
 
