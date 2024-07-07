@@ -66,6 +66,13 @@ class AIOMCServer(IMCServer):
     _max: int
     _count: int
     _motd: str
+    _data: bytes
+
+    def __init__(self, host: str, port: int) -> None:
+        super().__init__(host, port)
+        self._data = self._pack_data(
+                b"\x00\x00" + self._pack_data(self.host.encode('utf8')) + self.
+                _pack_port(self.port) + b"\x01")
 
     @staticmethod
     async def _unpack_varint(s):
@@ -100,9 +107,7 @@ class AIOMCServer(IMCServer):
 
     async def _get_data(self) -> dict:
         async with AIOConnection(self.host, self.port) as socket:
-            await socket.send(self._pack_data(
-                b"\x00\x00" + self._pack_data(self.host.encode('utf8')) + self.
-                _pack_port(self.port) + b"\x01"))
+            await socket.send(self._data)
             await socket.send(self._pack_data("\x00"))
             await self._unpack_varint(socket)
             await self._unpack_varint(socket)
