@@ -33,19 +33,25 @@ async def get_max(server: AIOMCServer) -> int:
     return await server.players_count
 
 
+async def get_players(server: AIOMCServer) -> tuple:
+    return tuple(await server.players_list)
+
+
 async def action() -> None:
     try:
         HOST, PORT = get_env("MC_HOST"), int(get_env("MC_PORT"))
         server = AIOMCServer(HOST, PORT)
         match arg():
-            case 'name':
+            case "name":
                 out = get_name(server)
-            case 'pmax':
+            case "pmax":
                 out = get_max(server)
-            case 'pcount':
+            case "pcount":
                 out = get_count(server)
-            case 'motd':
+            case "motd":
                 out = get_motd(server)
+            case "players":
+                out = get_players(server)
             case _:
                 raise RuntimeError
         print(await out)

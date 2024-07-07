@@ -1,5 +1,6 @@
 from asyncio import open_connection as aiocon, StreamReader, StreamWriter
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from struct import pack as struct_pack
 from json import loads as jl
 
@@ -59,6 +60,11 @@ class IMCServer(ABC):
     async def motd(self) -> str:
         raise NotImplementedError
 
+    @property
+    @abstractmethod
+    async def players_list(self) -> Iterable:
+        raise NotImplementedError
+
 
 class AIOMCServer(IMCServer):
 
@@ -67,12 +73,14 @@ class AIOMCServer(IMCServer):
     _count: int
     _motd: str
     _data: bytes
+    _players: Iterable
 
     def __init__(self, host: str, port: int) -> None:
         super().__init__(host, port)
         self._data = self._pack_data(
                 b"\x00\x00" + self._pack_data(self.host.encode('utf8')) + self.
                 _pack_port(self.port) + b"\x01")
+        self._players = ()
 
     @staticmethod
     async def _unpack_varint(s):
@@ -124,6 +132,9 @@ class AIOMCServer(IMCServer):
         players = data["players"]
         self._count = int(players["online"])
         self._max = int(players["max"])
+        if "sample" in tuple(players.keys()):
+            self._players = tuple(map(lambda player: player["name"],
+                                      players["sample"]))
 
     @property
     async def players_count(self) -> int:
@@ -144,3 +155,8 @@ class AIOMCServer(IMCServer):
     async def motd(self) -> str:
         await self.update()
         return self._motd
+
+    @property
+    async def players_list(self) -> Iterable:
+        await self.update()
+        return self._players

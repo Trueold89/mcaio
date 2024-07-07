@@ -68,6 +68,7 @@ print(name)
 | motd | Server motd |
 | players_count | Current number of players on the server |
 | maxplayers | Max number of players on the server |
+| players_list | List of current players on server |
 
 
 ### As cli:
@@ -83,3 +84,4 @@ MC_HOST=localhost MC_PORT=25565 mcaio name
 | motd | Server motd |
 | pcount | Current number of players on the server |
 | pmax | Max number of players on the server |
+| players | List of current players on server |
