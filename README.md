@@ -69,6 +69,7 @@ print(name)
 | players_count | Current number of players on the server |
 | maxplayers | Max number of players on the server |
 | players_list | List of current players on server |
+| all_info | Dict with all information about server |
 
 
 ### As cli:
@@ -85,3 +86,4 @@ MC_HOST=localhost MC_PORT=25565 mcaio name
 | pcount | Current number of players on the server |
 | pmax | Max number of players on the server |
 | players | List of current players on server |
+| all | Dict with all information about server |

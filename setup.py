@@ -6,7 +6,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setup(
     name="mcaio",
-    version="0.1",
+    version="0.2",
     url="https://git.orudo.ru/trueold89/mcaio",
     author="trueold89",
     author_email="trueold89@orudo.ru",

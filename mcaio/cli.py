@@ -37,6 +37,10 @@ async def get_players(server: AIOMCServer) -> tuple:
     return tuple(await server.players_list)
 
 
+async def get_all(server: AIOMCServer) -> dict:
+    return await server.all_info
+
+
 async def action() -> None:
     try:
         HOST, PORT = get_env("MC_HOST"), int(get_env("MC_PORT"))
@@ -52,6 +56,8 @@ async def action() -> None:
                 out = get_motd(server)
             case "players":
                 out = get_players(server)
+            case 'all':
+                out = get_all(server)
             case _:
                 raise RuntimeError
         print(await out)

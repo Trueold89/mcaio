@@ -65,6 +65,11 @@ class IMCServer(ABC):
     async def players_list(self) -> Iterable:
         raise NotImplementedError
 
+    @property
+    @abstractmethod
+    async def all_info(self) -> dict:
+        raise NotImplementedError
+
 
 class AIOMCServer(IMCServer):
 
@@ -160,3 +165,16 @@ class AIOMCServer(IMCServer):
     async def players_list(self) -> Iterable:
         await self.update()
         return self._players
+
+    @property
+    async def all_info(self) -> dict:
+        await self.update()
+        return {
+                "name": self._name,
+                "motd": self._motd,
+                "players": {
+                    "max": self._max,
+                    "online": self._count,
+                    "list": self._players
+                    }
+                }
