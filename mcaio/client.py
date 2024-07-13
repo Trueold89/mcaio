@@ -176,6 +176,8 @@ class AIOMCServer(IMCServer):
         self.clean()
         self._name = data["version"]["name"]
         self._motd = data["description"]
+        if isinstance(self._motd, dict):
+            self._motd = self._motd["text"]
         players = data["players"]
         self._count = int(players["online"])
         self._max = int(players["max"])
