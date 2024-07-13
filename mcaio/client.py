@@ -46,7 +46,7 @@ class IMCServer(ABC):
 
     @property
     @abstractmethod
-    async def players_count(self) -> int:
+    async def players_count(self) -> int | None:
         """
         Returns current number of players on server
 
@@ -56,7 +56,7 @@ class IMCServer(ABC):
 
     @property
     @abstractmethod
-    async def name(self) -> str:
+    async def name(self) -> str | None:
         """
         Returns server core name
 
@@ -66,7 +66,7 @@ class IMCServer(ABC):
 
     @property
     @abstractmethod
-    async def maxplayers(self) -> int:
+    async def maxplayers(self) -> int | None:
         """
         Returns max number of players available on server
 
@@ -76,7 +76,7 @@ class IMCServer(ABC):
 
     @property
     @abstractmethod
-    async def motd(self) -> str:
+    async def motd(self) -> str | None:
         """
         Returns Message of the day
 
@@ -107,10 +107,10 @@ class IMCServer(ABC):
 
 class AIOMCServer(IMCServer):
 
-    _name: str
-    _max: int
-    _count: int
-    _motd: str
+    _name: str | None
+    _max: int | None
+    _count: int | None
+    _motd: str | None
     _data: bytes
     _players: Iterable
 
@@ -119,7 +119,7 @@ class AIOMCServer(IMCServer):
         self._data = self._pack_data(
                 b"\x00\x00" + self._pack_data(self.host.encode('utf8')) + self.
                 _pack_port(self.port) + b"\x01")
-        self._players = ()
+        self.clean()
 
     @staticmethod
     async def _unpack_varint(s):
@@ -148,6 +148,13 @@ class AIOMCServer(IMCServer):
             d = bytes(d, "utf-8")
         return h + d
 
+    def clean(self) -> None:
+        self._name = None
+        self._motd = None
+        self._max = None
+        self._count = None
+        self._players = ()
+
     @staticmethod
     def _pack_port(i):
         return struct_pack('>H', i)
@@ -166,6 +173,7 @@ class AIOMCServer(IMCServer):
 
     async def update(self) -> None:
         data = await self._get_data()
+        self.clean()
         self._name = data["version"]["name"]
         self._motd = data["description"]
         players = data["players"]
@@ -176,22 +184,22 @@ class AIOMCServer(IMCServer):
                                       players["sample"]))
 
     @property
-    async def players_count(self) -> int:
+    async def players_count(self) -> int | None | None:
         await self.update()
         return self._count
 
     @property
-    async def name(self) -> str:
+    async def name(self) -> str | None | None:
         await self.update()
         return self._name
 
     @property
-    async def maxplayers(self) -> int:
+    async def maxplayers(self) -> int | None | None:
         await self.update()
         return self._max
 
     @property
-    async def motd(self) -> str:
+    async def motd(self) -> str | None | None:
         await self.update()
         return self._motd
 
